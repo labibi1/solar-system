@@ -1,4 +1,3 @@
----
 name: Run Unit Tests
 on:
   workflow_dispatch: null
@@ -36,13 +35,15 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Unit Testing
+        id: nodejs-unit-testing
         run: npm test
-      - name: Archive Test Result
-        uses: actions/upload-artifact@v4
+      - name: Archive Test Results
+        if: steps.nodejs-unit-testing.outcome == 'failure' ||
+          steps.nodejs-unit-testing.outcome == 'success'
+        uses: actions/upload-artifact@v3
         with:
           name: Mocha-Test-Result
-          path: test-results1.xml
-
+          path: test-results.xml
   code-coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
